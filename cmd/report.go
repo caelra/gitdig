@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/caelra/gitdig/internal/report"
 	"github.com/spf13/cobra"
@@ -21,11 +22,15 @@ func runReport(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	log.Printf("Generating report...\n")
+
 	r := report.New(cfg.Sender, cfg.RepoOwner, cfg.RepoName, gh, smtp)
 
 	if err := r.Generate(args, preview); err != nil {
 		return fmt.Errorf("failed to generate report: %w", err)
 	}
+
+	log.Printf("Generating report...")
 
 	return nil
 }

@@ -28,6 +28,7 @@ func runCronReport(cmd *cobra.Command, args []string) error {
 	c := cron.New()
 
 	_, err = c.AddFunc(crontab, func() {
+		log.Printf("Generating report...\n")
 		gh, smtp, err := initializeServices()
 		if err != nil {
 			log.Printf("Failed to connect to services: %s", err)
@@ -40,6 +41,8 @@ func runCronReport(cmd *cobra.Command, args []string) error {
 			log.Printf("Failed to generate report: %s", err)
 			return
 		}
+
+		log.Printf("Report sent...")
 	})
 	if err != nil {
 		log.Fatal("Error adding cron job:", err)
