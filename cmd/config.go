@@ -8,4 +8,6 @@ type Config struct {
 	Sender        string `env:"SENDER" envDefault:"caelra99œgmail.com"`
 	RepoOwner     string `env:"REPO_OWNER" envDefault:"ziglang"`
 	RepoName      string `env:"REPO_NAME" envDefault:"zig"`
+	ScheduleDay   string `env:"SCHEDULE_DAY" envDefault:"monday"`
+	ScheduleTime  string `env:"SCHEDULE_TIME" envDefault:"09:00"`
 }
