@@ -57,10 +57,6 @@ func (r *PRReport) Generate(recipients []string, verbose bool) error {
 			log.Printf("Error writing pull request to buffer: %v", err)
 			return err
 		}
-
-		if verbose {
-			previewBody(pull, weekAgo)
-		}
 	}
 
 	msg := []byte(fmt.Sprintf(
@@ -70,22 +66,21 @@ func (r *PRReport) Generate(recipients []string, verbose bool) error {
 		totalPR,
 	))
 
+	if verbose {
+		mailData := fmt.Sprintf(
+			"To: %s\r\nSubject: Weekly Pull Request Report\r\n\r\n%s\r\n\nTotal PRs: %d",
+			strings.Join(recipients, ", "),
+			buffer.String(),
+			totalPR)
+		fmt.Println(mailData)
+	}
+
 	if err := r.MailerSvc.Send(r.Sender, recipients, msg); err != nil {
 		log.Printf("Error sending email: %v", err)
 		return err
 	}
 
 	return nil
-}
-
-func previewBody(pull *github.PullRequest, frecuency time.Time) {
-	if pull.GetMergedAt().After(frecuency) && pull.GetState() == "closed" {
-		fmt.Printf("[%s] merged #%d %s (%s)\n", pull.GetMergedAt().Format("2006-01-02"), pull.GetNumber(), pull.GetTitle(), pull.User.GetLogin())
-	} else if pull.GetCreatedAt().After(frecuency) && pull.GetState() == "open" {
-		fmt.Printf("[%s] %s #%d %s (%s)\n", pull.GetCreatedAt().Format("2006-01-02"), pull.GetState(), pull.GetNumber(), pull.GetTitle(), pull.User.GetLogin())
-	} else if pull.GetClosedAt().After(frecuency) && pull.GetState() == "closed" {
-		fmt.Printf("[%s] %s #%d %s (%s)\n", pull.GetCreatedAt().Format("2006-01-02"), pull.GetState(), pull.GetNumber(), pull.GetTitle(), pull.User.GetLogin())
-	}
 }
 
 func mailBody(b *bytes.Buffer, pull *github.PullRequest, frecuency time.Time) error {
