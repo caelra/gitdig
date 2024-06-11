@@ -1,0 +1,7 @@
+services:
+  cli:
+    build: .
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GOOGLE_MAIL=${GOOGLE_MAIL}
+      - GOOGLE_APP_PASS=${GOOGLE_APP_PASS}
